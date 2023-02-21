@@ -11,7 +11,7 @@ Guacamole is an HTML5 web application that provides access to desktop environmen
 Use a central repository which links to all Apps which has to be deployed,
 and add the App desciption there, or deploy the App for Uptime Kuma manually.
 Find a sample in my [App of Apps Repo](https://github.com/wep4you/k8s-apps.git),
-there is also a sample definition for [Uptime Kuma](https://github.com/wep4you/k8s-apps/blob/main/local/guacamole.yml)
+there is also a sample definition for [Guacamole](https://github.com/wep4you/k8s-apps/blob/main/local/guacamole.yml)
 
 ## Install manual with kubectl
 
