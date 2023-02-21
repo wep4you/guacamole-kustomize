@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole
+  namespace: guacamole
+  labels:
+    app: guacamole
+spec:
+  selector:
+    matchLabels:
+      app: guacamole
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: guacamole
+    spec:
+      containers:
+        - name: guacamole
+          image: maxwaldorf/guacamole:1.4.2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: EXTENSIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: guacamole-config
+                  key: extensions
+            - name: PGUSER
+              value: "postgres"
+          ports:
+            - containerPort: 8080
+              name: guacamole
+          volumeMounts:
+            - name: guacamole-persistent-storage
+              mountPath: /config
+            - name: guacamole-config
+              mountPath: /config/guacamole/guacamole.properties
+              subPath: guacamole.properties
+          readinessProbe:
+            tcpSocket:
+              port: 4822
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 4822
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "400Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "750m"
+      volumes:
+        - name: guacamole-persistent-storage
+          persistentVolumeClaim:
+            claimName: guacamole-pvc
+        - name: guacamole-config
+          configMap:
+            name: guacamole-config
